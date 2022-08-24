@@ -1,0 +1,65 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>Monitor IoT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="topnav">
+    <h3>Monitor IoT</h3>
+  </div>
+  <div class="content">
+    <div class="cards">
+      <div class="card volt">
+        <h4><i class="fa-solid fa-plug"></i> Voltaje 1</h4><p><span class="reading"><span id="v1"></span> V</span></p>
+      </div>
+      <div class="card volt">
+        <h4><i class="fa-solid fa-plug"></i> Voltaje 2</h4><p><span class="reading"><span id="v2"></span> V</span></p>
+      </div>
+      <div class="card volt">
+        <h4><i class="fa-solid fa-plug"></i> Voltaje 3</h4><p><span class="reading"><span id="v3"></span> V</span></p>
+      </div>
+      <div class="card current">
+        <h4><i class="fa-solid fa-bolt"></i> Corriente</h4><p><span class="reading"><span id="c"></span> A</span></p>
+      </div>
+    </div>
+  </div>
+
+<script>
+if (!!window.EventSource) 
+{
+  var source = new EventSource('/events');
+
+  source.addEventListener('open', function(e) 
+  {
+    console.log("Events Connected");
+  }, false);
+
+  source.addEventListener('error', function(e) 
+  {
+    if (e.target.readyState != EventSource.OPEN) 
+    {
+      console.log("Events Disconnected");
+    }
+  }, false);
+
+  source.addEventListener('message', function(e) 
+  {
+    console.log("message", e.data);
+  }, false);
+
+  source.addEventListener('new_readings', function(e) 
+  {
+    console.log("new_readings", e.data);
+    var obj = JSON.parse(e.data);
+    document.getElementById("v1").innerHTML = obj.v1.toFixed(2);
+    document.getElementById("v2").innerHTML = obj.v2.toFixed(2);
+    document.getElementById("v3").innerHTML = obj.v3.toFixed(2);
+    document.getElementById("c").innerHTML = obj.c.toFixed(2);
+  }, false);
+}
+</script>
+</body>
+</html>
